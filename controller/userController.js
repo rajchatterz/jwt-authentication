@@ -1,6 +1,14 @@
 const userSchema = require('../userSchema/authSchema')
 // to check the email
 const emailValidator = require('email-validator')
+/******************************************************
+ * @SIGNUP
+ * @route /api/auth/signup
+ * @method POST
+ * @description singUp function for creating new user
+ * @body name, email, password, confirmPassword
+ * @returns User Object
+ ******************************************************/
 
 const signup= async(req,res) =>{
     const {name,email,password,confirmPassword}=req.body
@@ -49,6 +57,17 @@ const signup= async(req,res) =>{
         })
     }
 }
+
+
+/******************************************************
+ * @SIGNIN
+ * @route /api/auth/signin
+ * @method POST
+ * @description verify user and send cookie with jwt token
+ * @body email , password
+ * @returns User Object , cookie
+ ******************************************************/
+
 const signin = async(req,res)=>{
     const {email, password} = req.body
     if( !email || !password){
@@ -67,20 +86,24 @@ const signin = async(req,res)=>{
     // above code will check if that code could ablr to find the email add then pleae bring the password too
 
     // thses code will check wheather there is any password or not
-    if(!user || user.password===password){
+    if(!user || user.password!==password){
         return res.status(400).json({
             success:false,
             message:"Invalid cred"
         })
     }
-
-    const TOKEN = user.jwtToken();
-    user.password=null
+// to mention the token
+    const token = user.jwtToken();
+    user.password=undefined
     const cookieOption = {
         maxAge:24*60*60*1000,
         httpOnly:true
     }
-    res.cookie("token",TOKEN,cookieOption)
+    res.cookie("token",token,cookieOption)
+    return res.status(200).json({
+        success:true,
+        data:user
+    })
     
     } catch (error) {
         return res.status(400).json({
