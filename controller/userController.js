@@ -1,5 +1,6 @@
 const userSchema = require('../userSchema/authSchema')
-
+// to check the email
+const emailValidator = require('email-validator')
 const signup= async(req,res) =>{
     const {name,email,password,confirmPassword}=req.body
 
@@ -7,6 +8,15 @@ const signup= async(req,res) =>{
         return res.status(400).json({
             succes:false,
             message:"Every field is required"
+        })
+    }
+    // to check wheather user give us the right email adderess or not
+
+    const validEmail = emailValidator.validate(email)
+    if(!validEmail){
+        return res.status(400).json({
+            succes:false,
+            message:"Please provide the valid email id"
         })
     }
     try {
