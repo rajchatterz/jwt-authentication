@@ -58,7 +58,8 @@ const signin = async(req,res)=>{
         })
     }
 
-    const user = await userSchema
+    try {
+        const user = await userSchema
     .findOne({
         email
     })
@@ -72,21 +73,23 @@ const signin = async(req,res)=>{
             message:"Invalid cred"
         })
     }
-    try {
 
-    const userData = await userSchema(req.body)
-    return res.status(200).json({
-        success:true,
-        message:"You have successfully logged in"
-
-    })
+    const TOKEN = user.jwtToken();
+    user.password=null
+    const cookieOption = {
+        maxAge:24*60*60*1000,
+        httpOnly:true
+    }
+    res.cookie("token",TOKEN,cookieOption)
+    
     } catch (error) {
-        res.status(400).json({
+        return res.status(400).json({
             success:false,
-            message:"Error login"
+            message:error
         })
     }
 }
+
 module.exports={
     signup,
     signin
