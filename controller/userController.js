@@ -19,6 +19,13 @@ const signup= async(req,res) =>{
             message:"Please provide the valid email id"
         })
     }
+    // to check the password or confirmpassword are same or not
+    if(password !== confirmPassword){
+        return res.status(400).json({
+            succes:false,
+            message:"Password Doesn't match"
+        })
+    }
     try {
         const userInfo = userSchema(req.body)
         const userData = await userInfo.save()
@@ -43,6 +50,27 @@ const signup= async(req,res) =>{
 }
 const signin = async(req,res)=>{
     const {email, password} = req.body
+    if( !email || !password){
+        return res.status(400).json({
+            succes:false,
+            message:"Every field is required"
+        })
+    }
+
+    const user = await userSchema
+    .findOne({
+        email
+    })
+    .select('+password')
+    // above code will check if that code could ablr to find the email add then pleae bring the password too
+
+    // thses code will check wheather there is any password or not
+    if(!user || user.password===password){
+        return res.status(400).json({
+            success:false,
+            message:"Invalid cred"
+        })
+    }
     try {
 
     const userData = await userSchema(req.body)
