@@ -1,6 +1,7 @@
 const userSchema = require('../userSchema/authSchema')
 // to check the email
 const emailValidator = require('email-validator')
+
 const signup= async(req,res) =>{
     const {name,email,password,confirmPassword}=req.body
 
