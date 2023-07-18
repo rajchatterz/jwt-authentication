@@ -1,8 +1,9 @@
 const express = require('express')
-const { signup } = require('../controller/userController')
+const { signup, signin } = require('../controller/userController')
 
 const authRouter = express.Router()
 
+authRouter.get('/signin',signin)
 authRouter.post('/signup',signup)
 
 
