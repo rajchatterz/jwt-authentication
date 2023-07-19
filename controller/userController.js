@@ -112,8 +112,26 @@ const signin = async(req,res)=>{
         })
     }
 }
+const getuser=async(req,res,next)=>{
+    const userId = req.user.id
+    // we have to check wheather the user logged in or not thats why we need to make a middleware
+    // after using the middleware we can get the user id by token
+    try {
+        const user = await userSchema.findById(userId)
+        return res.status(200).json({
+            success:true,
+            message:user
+        })
+    } catch (error) {
+        return res.status(400).json({
+            success:false,
+            message:error
+        })
+    }
+}
 
 module.exports={
     signup,
-    signin
+    signin,
+    getuser
 }
