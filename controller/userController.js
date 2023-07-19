@@ -130,8 +130,27 @@ const getuser=async(req,res,next)=>{
     }
 }
 
+const logout = (req,res)=>{
+    try {
+        const cookieOption = {
+            expire:new Date(),
+            httpOnly:true
+        }
+        res.cookie("token",null,cookieOption)
+        res.status(200).json({
+            success:true,
+            message: "loggedOut"
+        })
+    } catch (error) {
+        res.status(400).json({
+            success:false,
+            message:e.message
+        })
+    }
+}
 module.exports={
     signup,
     signin,
-    getuser
+    getuser,
+    logout
 }
