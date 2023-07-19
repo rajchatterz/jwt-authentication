@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const JWT = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const authSchema = new mongoose.Schema({
     name:{
         type:String,
@@ -38,5 +39,13 @@ authSchema.methods={
         )
     }
 }
+
+// by the help of mongoose we can pass the custom method
+authSchema.pre('save',async function(next){
+    if(!this.isModified('password')){
+        return next()
+    }
+    this.password = await bcrypt.hash(this.password,10)
+})
 
 module.exports=mongoose.model("user",authSchema)
