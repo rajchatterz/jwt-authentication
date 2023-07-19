@@ -1,6 +1,7 @@
 const userSchema = require('../userSchema/authSchema')
 // to check the email
 const emailValidator = require('email-validator')
+const bcrypt = require('bcrypt')
 /******************************************************
  * @SIGNUP
  * @route /api/auth/signup
@@ -86,7 +87,7 @@ const signin = async(req,res)=>{
     // above code will check if that code could ablr to find the email add then pleae bring the password too
 
     // thses code will check wheather there is any password or not
-    if(!user || user.password!==password){
+    if(!user || !(await bcrypt.compare(password, user.password))){
         return res.status(400).json({
             success:false,
             message:"Invalid cred"
